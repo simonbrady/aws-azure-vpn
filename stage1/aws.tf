@@ -32,12 +32,6 @@ resource "aws_ec2_transit_gateway" "tgw" {
   }
 }
 
-resource "aws_route" "azure" {
-  route_table_id         = aws_vpc.main.main_route_table_id
-  destination_cidr_block = var.azure_spoke_vnet_cidr
-  transit_gateway_id     = aws_ec2_transit_gateway.tgw.id
-}
-
 resource "aws_ec2_transit_gateway_vpc_attachment" "main" {
   transit_gateway_id = aws_ec2_transit_gateway.tgw.id
   vpc_id             = aws_vpc.main.id
@@ -45,6 +39,12 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "main" {
   tags = {
     Name = "${var.prefix}-tgw-attachment"
   }
+}
+
+resource "aws_route" "azure" {
+  route_table_id         = aws_vpc.main.main_route_table_id
+  destination_cidr_block = var.azure_spoke_vnet_cidr
+  transit_gateway_id     = aws_ec2_transit_gateway.tgw.id
 }
 
 resource "aws_security_group" "main" {
