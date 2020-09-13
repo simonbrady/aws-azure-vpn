@@ -46,8 +46,8 @@ local (AWS) gateways
 As explained under
 [Data Source Lifecycle](https://www.terraform.io/docs/configuration/data-sources.html#data-source-lifecycle),
 a data source can either be read in the "refresh" phase of an apply (prior to creating any resources)
-or it can depend on computed values in which case it is read during the "apply" phase. Clearly the first option
-won't work in our case since we specifically don't want to read the data source until the underlying resource
+or it can depend on computed values in which case it's read during the "apply" phase. Clearly the first option
+won't work in our case since we don't want to read the data source until the underlying resource
 has its `ip_address` populated. Reading it during the apply phase is also problematic, however, because as
 noted in the docs any resources that depend on the data source will now reference "computed" (i.e. unknown)
 values - the practical effect of this is that our `aws_customer_gateway` resource and its dependencies will
