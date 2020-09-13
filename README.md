@@ -31,7 +31,7 @@ is created with a null `ip_address` attribute. This attribute is only assigned a
 gateway is created, so it needs to be read using an
 [azurerm_public_ip data source](https://www.terraform.io/docs/providers/azurerm/d/public_ip.html)
 rather than referenced as a resource attribute. Because AWS assigns its public IPs as attributes
-of the VPN connection, not the VPN gateway, we need to create things in this order:
+of the VPN connection, we need to create things in this order:
 
 1. Create `azurerm_public_ip` and `aws_ec2_transit_gateway` resources in parallel
 1. Create `azurerm_virtual_network_gateway` resource
