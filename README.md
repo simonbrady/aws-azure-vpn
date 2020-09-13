@@ -38,7 +38,7 @@ of the VPN connection, we need to create things in this order:
 1. Read `azurerm_public_ip` data source to get the allocated IP address
 1. Create `aws_customer_gateway` resource with the Azure public IP address
 1. Create `aws_vpn_connection` resource connecting the transit gateway and customer (Azure) gateway
-1. Create `azurerm_local_network_gateway` resources with the primary and seconday AWS tunnel IPs
+1. Create `azurerm_local_network_gateway` resources with the primary and secondary AWS tunnel IPs
 (attributes of the `aws_vpn_connection` resource)
 1. Create `azurerm_virtual_network_gateway_connection` resources connecting the Azure VPN gateway and
 local (AWS) gateways
