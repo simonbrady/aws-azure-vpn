@@ -33,6 +33,16 @@ variable "azure_spoke_vnet_cidr" {
   description = "CIDR range for Azure spoke vnet"
 }
 
+variable "azure_vm_admin_username" {
+  type        = string
+  description = "Name of local admin user for Azure VM"
+}
+
+variable "azure_vm_public_key" {
+  type        = string
+  description = "Local pathname of public SSH key for Azure VM, relative to stage1 directory"
+}
+
 variable "prefix" {
   type        = string
   description = "Common prefix for resource names"

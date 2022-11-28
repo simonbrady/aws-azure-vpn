@@ -73,7 +73,7 @@ resource "aws_security_group" "main" {
 resource "aws_instance" "vm" {
   ami                         = data.aws_ami.ubuntu.id
   associate_public_ip_address = true
-  instance_type               = "t3.small"
+  instance_type               = "t3.micro"
   key_name                    = var.aws_keypair_name
   subnet_id                   = aws_subnet.main.id
   vpc_security_group_ids      = [aws_security_group.main.id]

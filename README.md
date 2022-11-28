@@ -68,23 +68,30 @@ to pass attributes from the first stage to the second. There's a trade-off here 
 be created in either stage: the more resources in the first stage the more we have to access remote state, but
 the more in the second stage the more we have to pass through input variables. I've chosen to create as much as
 possible in the first stage for two reasons: this makes it easier to supply all variables in a single place, and
-it lets more resources be created while the Azure VPN gateway is deploying (which can take 45 minutes or longer).
+it lets more resources be created while the Azure VPN gateway is deploying (which can take 15 minutes or longer).
 
 ## Testing
 
+The Azure VM deployment requires a local SSH public key. You can either set the variable `azure_vm_public_key`
+to the path to an existing public key, or create one in the top-level directory of this repo. The commands
+that follow assume you're creating a new one.
+
 Once you've authenticated to both clouds (same as you would for CLI access), run
 ```
+ssh-keygen -t rsa -b 3072 -f azure-vm-rsa
+cd stage1
+terraform init
+terraform apply
+cd ../stage2
 terraform init
 terraform apply
 ```
-in `stage1`, then again in `stage2` once the first apply completes.
 
 To prove that the connection works, this code deploys a VM on each side that you can SSH into
 by public IP. For AWS, log in as `ubuntu` with an existing EC2 key pair (specified in
 [terraform.tfvars](stage1/terraform.tfvars)), and for Azure log in as `adminuser` using the
-password generated as an output of the `stage1` deployment. To control SSH access set the
-`admin_cidr` variable.
+corresponding private key. To restrict SSH access set the `admin_cidr` variable.
 
-From each VM you can then SSH to the other's private IP across the VPN. All these IP addresses
-are available as [outputs](https://www.terraform.io/docs/commands/output.html) of the `stage1`
-deploynent.
+From each VM you can then SSH to the other's private IP across the VPN (you'll need to upload
+the remote VM's private key first). All these IP addresses are available as
+[outputs](https://developer.hashicorp.com/terraform/language/values/outputs) of the `stage1` deploynent.

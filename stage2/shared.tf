@@ -1,7 +1,7 @@
 # IPsec shared key can't start with digit 0
 resource "random_password" "first_letter" {
   length  = 1
-  number  = false
+  numeric = false
   special = false
 }
 

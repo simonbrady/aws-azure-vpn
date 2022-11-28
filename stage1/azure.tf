@@ -91,14 +91,6 @@ resource "azurerm_virtual_network_peering" "spoke_to_hub" {
   use_remote_gateways       = true
 }
 
-resource "random_password" "admin" {
-  length      = 32
-  min_upper   = 1
-  min_lower   = 1
-  min_numeric = 1
-  min_special = 1
-}
-
 resource "azurerm_public_ip" "vm" {
   name                = "${var.prefix}-vm-public-ip"
   location            = azurerm_resource_group.rg.location
@@ -120,16 +112,19 @@ resource "azurerm_network_interface" "vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                            = "${var.prefix}-vm"
-  resource_group_name             = azurerm_resource_group.rg.name
-  location                        = azurerm_resource_group.rg.location
-  size                            = "Standard_B1ms"
-  admin_username                  = "adminuser"
-  admin_password                  = random_password.admin.result
-  disable_password_authentication = false
+  name                = "${var.prefix}-vm"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = "Standard_B1s"
+  admin_username      = var.azure_vm_admin_username
   network_interface_ids = [
     azurerm_network_interface.vm.id,
   ]
+
+  admin_ssh_key {
+    username   = var.azure_vm_admin_username
+    public_key = file(var.azure_vm_public_key)
+  }
 
   os_disk {
     caching              = "ReadWrite"
@@ -137,9 +132,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = data.azurerm_platform_image.ubuntu.publisher
+    offer     = data.azurerm_platform_image.ubuntu.offer
+    sku       = data.azurerm_platform_image.ubuntu.sku
+    version   = data.azurerm_platform_image.ubuntu.version
   }
 }
