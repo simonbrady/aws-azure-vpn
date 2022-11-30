@@ -94,4 +94,5 @@ corresponding private key. To restrict SSH access set the `admin_cidr` variable.
 
 From each VM you can then SSH to the other's private IP across the VPN (you'll need to upload
 the remote VM's private key first). All these IP addresses are available as
-[outputs](https://developer.hashicorp.com/terraform/language/values/outputs) of the `stage1` deploynent.
+[outputs](https://developer.hashicorp.com/terraform/language/values/outputs) of the `stage1`
+deployment.
