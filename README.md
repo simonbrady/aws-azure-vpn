@@ -24,14 +24,14 @@ takes care of ordering resource creation with one important exception, the publi
 the Azure VPN gateway.
 
 The difficulty is that VPN gateways only support
-[dynamically-allocated](https://docs.microsoft.com/en-us/azure/virtual-network/public-ip-addresses#allocation-method)
+[dynamically-allocated](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses#ip-address-assignment)
 public IPs, meaning that the
-[azurerm_public_ip resource](https://www.terraform.io/docs/providers/azurerm/r/public_ip.html)
+[azurerm_public_ip resource](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip.html)
 is created with a null `ip_address` attribute. This attribute is only assigned after the VPN
 gateway is created, so it needs to be read using an
-[azurerm_public_ip data source](https://www.terraform.io/docs/providers/azurerm/d/public_ip.html)
+[azurerm_public_ip data source](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/public_ip.html)
 rather than referenced as a resource attribute. Because AWS assigns its public IPs as attributes
-of the VPN connection, we need to create things in this order:
+of the VPN connection, we need to do things in this order:
 
 1. Create `azurerm_public_ip` and `aws_ec2_transit_gateway` resources in parallel
 1. Create `azurerm_virtual_network_gateway` resource
@@ -44,7 +44,7 @@ of the VPN connection, we need to create things in this order:
 local (AWS) gateways
 
 As explained under
-[Data Source Lifecycle](https://www.terraform.io/docs/configuration/data-sources.html#data-source-lifecycle),
+[Data Source Lifecycle](https://developer.hashicorp.com/terraform/language/data-sources#data-source-lifecycle),
 a data source can either be read in the "refresh" phase of an apply (prior to creating any resources)
 or it can depend on computed values in which case it's read during the "apply" phase. Clearly the first option
 won't work in our case since we don't want to read the data source until the underlying resource
@@ -61,9 +61,9 @@ toy example, in reality an organisation would likely create the Azure and AWS si
 codebases, deployment pipelines and even engineering teams, so this sort of multi-stage deployment is to be
 expected.
 
-Because each stage manages its own [Terraform state](https://www.terraform.io/docs/state/index.html) we use
-the Terraform provider's
-[remote_state data source](https://www.terraform.io/docs/providers/terraform/d/remote_state.html)
+Because each stage manages its own [Terraform state](hhttps://developer.hashicorp.com/terraform/language/state)
+we use the Terraform provider's
+[remote_state data source](https://developer.hashicorp.com/terraform/language/state/remote-state-data)
 to pass attributes from the first stage to the second. There's a trade-off here around resources that could
 be created in either stage: the more resources in the first stage the more we have to access remote state, but
 the more in the second stage the more we have to pass through input variables. I've chosen to create as much as
