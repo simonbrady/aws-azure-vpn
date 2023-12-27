@@ -62,6 +62,14 @@ resource "aws_security_group" "main" {
     cidr_blocks = [var.admin_cidr, var.azure_spoke_vnet_cidr]
   }
 
+  ingress {
+    description = "ICMP"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = [var.admin_cidr, var.azure_spoke_vnet_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
